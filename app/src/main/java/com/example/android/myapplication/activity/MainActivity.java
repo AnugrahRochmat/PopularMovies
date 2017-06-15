@@ -1,38 +1,40 @@
 package com.example.android.myapplication.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.widget.Toast;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
 
 import com.example.android.myapplication.R;
-import com.example.android.myapplication.adapter.MoviesAdapter;
-import com.example.android.myapplication.model.Movie;
-import com.example.android.myapplication.model.MoviesResponse;
-import com.example.android.myapplication.rest.ApiClient;
-import com.example.android.myapplication.rest.ApiInterface;
-
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    // Declaring imageview variable
+    private ImageView imageView;
+
+    //private static final String TAG = MainActivity.class.getSimpleName();
 
     // API key here
-    private  final static String API_KEY = "6ef4360865ba5932e05c5d9edb7eaaff";
+    //private  final static String API_KEY = "6ef4360865ba5932e05c5d9edb7eaaff";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (API_KEY.isEmpty()) {
+        /**
+         * Initializing image view
+         */
+        imageView = (ImageView) findViewById(R.id.imageView);
+
+        /**
+         * Loading image from URL
+         */
+        Picasso.with(this)
+                .load("http://image.tmdb.org/t/p/w185//gfJGlDaHuWimErCr5Ql0I8x9QSy.jpg")
+                .into(imageView);
+
+/*        if (API_KEY.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Please insert your API key", Toast.LENGTH_LONG).show();
             return;
         }
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call<MoviesResponse> call, Throwable t) {
                 Log.e(TAG, t.toString());
             }
-        });
+        });*/
 
     }
 }
