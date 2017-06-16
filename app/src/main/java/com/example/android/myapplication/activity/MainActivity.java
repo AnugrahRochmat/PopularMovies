@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.android.myapplication.R;
@@ -23,8 +24,11 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private ProgressBar progressBar;
 
-    // API key here
+    /**
+     * API KEY here
+     */
     private  final static String API_KEY = "6ef4360865ba5932e05c5d9edb7eaaff";
 
     private RecyclerView recyclerView;
@@ -35,6 +39,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        recyclerView = (RecyclerView) findViewById(R.id.movies_recycler_view);
+        GridLayoutManager layoutManager = new GridLayoutManager(this,2);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+
         /**
          * RecyclerView with GridLayout Manager
          */
@@ -43,17 +53,16 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.movies_recycler_view);
-        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
-
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<MoviesResponse> call = apiService.getTopRatedMovies(API_KEY);
+        Call<MoviesResponse> call = apiService.getPopularMovies(API_KEY);
+
         call.enqueue(new Callback<MoviesResponse>() {
             @Override
             public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
                 List<Movie> movies = response.body().getResults();
-                recyclerView.setAdapter(new PosterAdapter(movies, getApplicationContext()));
+                adapter = new PosterAdapter(movies, getApplicationContext());
+                recyclerView.setAdapter(adapter);
             }
 
             @Override
