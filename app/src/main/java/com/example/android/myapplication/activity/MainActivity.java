@@ -1,10 +1,12 @@
 package com.example.android.myapplication.activity;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -15,10 +17,10 @@ import com.example.android.myapplication.model.MoviesResponse;
 import com.example.android.myapplication.rest.ApiClient;
 import com.example.android.myapplication.rest.ApiInterface;
 
+import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,39 +41,64 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /**
+         * RecyclerView with GridLayout Manager
+         */
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         recyclerView = (RecyclerView) findViewById(R.id.movies_recycler_view);
         GridLayoutManager layoutManager = new GridLayoutManager(this,2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
-        /**
-         * RecyclerView with GridLayout Manager
-         */
+        loadMovies();
+
+    }
+
+    private void loadMovies(){
         if (API_KEY.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Please insert your API key", Toast.LENGTH_LONG).show();
             return;
         }
 
-        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        new FetchMoviesTask().execute();
+    }
 
-        Call<MoviesResponse> call = apiService.getPopularMovies(API_KEY);
+    public class FetchMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
 
-        call.enqueue(new Callback<MoviesResponse>() {
-            @Override
-            public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected List<Movie> doInBackground(Void... params) {
+
+            ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+            Call<MoviesResponse> call = apiService.getPopularMovies(API_KEY);
+
+            try {
+                Response<MoviesResponse> response = call.execute();
                 List<Movie> movies = response.body().getResults();
-                adapter = new PosterAdapter(movies, getApplicationContext());
+                return movies;
+            } catch (IOException e) {
+                Log.e(TAG, "A problem occured ", e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<Movie> movies) {
+            progressBar.setVisibility(View.INVISIBLE);
+            if (movies != null) {
+                adapter = new PosterAdapter(movies,getApplicationContext());
                 recyclerView.setAdapter(adapter);
             }
-
-            @Override
-            public void onFailure(Call<MoviesResponse> call, Throwable t) {
-                Log.e(TAG, t.toString());
-            }
-        });
+        }
 
     }
+
+
 }
 
 
