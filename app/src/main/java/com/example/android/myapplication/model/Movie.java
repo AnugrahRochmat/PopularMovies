@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Movie {
     /**
-     * Initialized variable to be stored data from API
+     * Declaration variable to be stored data from API
      */
     @SerializedName("adult")
     private boolean adult;

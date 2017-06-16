@@ -22,9 +22,6 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Declaring imageview variable
-    //private ImageView imageView;
-
     private static final String TAG = MainActivity.class.getSimpleName();
 
     // API key here
@@ -39,28 +36,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         /**
-         * Try GridLayout
+         * RecyclerView with GridLayout Manager
          */
-        //recyclerView = (RecyclerView) findViewById(R.id.movies_recycler_view);
-        //recyclerView.setHasFixedSize(true);
-
-        // Set GridLayoutManager
-        //GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
-        //recyclerView.setLayoutManager(layoutManager);
-        //adapter = new PosterAdapter(this);
-        //recyclerView.setAdapter(adapter);
-
-        /**
-         * Try Picasso Library
-         */
-        /*// Referenced image view to id from xml file
-        imageView = (ImageView) findViewById(R.id.imageView);
-
-        // Loading Image View
-        Picasso.with(this)
-                .load("http://image.tmdb.org/t/p/w185//gfJGlDaHuWimErCr5Ql0I8x9QSy.jpg")
-                .into(imageView);*/
-
         if (API_KEY.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Please insert your API key", Toast.LENGTH_LONG).show();
             return;

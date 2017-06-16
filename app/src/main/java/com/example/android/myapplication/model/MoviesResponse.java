@@ -10,7 +10,7 @@ import java.util.List;
 
 public class MoviesResponse {
     /**
-     * Initialized variable
+     * Declaration variable
      */
     @SerializedName("page")
     private Integer page;
