@@ -19,7 +19,7 @@ import java.util.List;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
     /**
-     * Initialized variable
+     * Declaration variable
      */
     private List<Movie> movies;
     private Context context;
