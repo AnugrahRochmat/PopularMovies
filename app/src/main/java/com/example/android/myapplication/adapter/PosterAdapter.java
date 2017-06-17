@@ -57,4 +57,9 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
     public int getItemCount() {
         return movies.size();
     }
+
+    public void setMoviesData(List<Movie> movies) {
+        this.movies = movies;
+        notifyDataSetChanged();
+    }
 }
