@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.android.myapplication.BuildConfig;
 import com.example.android.myapplication.R;
 import com.example.android.myapplication.adapter.PosterAdapter;
 import com.example.android.myapplication.model.Movie;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * API KEY here
      */
-    private  final static String API_KEY = "6ef4360865ba5932e05c5d9edb7eaaff";
+    private static final String API_KEY = BuildConfig.API_KEY;
 
     private RecyclerView recyclerView;
     private PosterAdapter adapter;

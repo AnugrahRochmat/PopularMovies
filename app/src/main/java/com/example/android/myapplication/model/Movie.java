@@ -1,28 +1,34 @@
 package com.example.android.myapplication.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Anugrah on 6/15/17.
  */
 
-public class Movie {
+public class Movie implements Parcelable{
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
+
     /**
      * Declaration variable to be stored data from API
      */
-    @SerializedName("adult")
-    private boolean adult;
     @SerializedName("backdrop_path")
     private String backdropPath;
-    @SerializedName("genre_ids")
-    private List<Integer> genreIds = new ArrayList<Integer>();
     @SerializedName("id")
     private Integer id;
-    @SerializedName("original_language")
-    private String originalLanguage;
     @SerializedName("original_title")
     private String originalTitle;
     @SerializedName("overview")
@@ -35,57 +41,34 @@ public class Movie {
     private String releaseDate;
     @SerializedName("title")
     private String title;
-    @SerializedName("video")
-    private Boolean video;
     @SerializedName("vote_average")
     private Double voteAverage;
-    @SerializedName("vote_count")
-    private Integer voteCount;
 
     /**
      * Movie class constructor
      */
-    public Movie(boolean adult, String backdropPath, List<Integer> genreIds, Integer id, String originalLanguage,
-                 String originalTitle, String overview, Double popularity, String posterPath, String releaseDate,
-                 String title, Boolean video, Double voteAverage, Integer voteCount){
-        this.adult = adult;
+    public Movie(String backdropPath, Integer id, String originalTitle, String overview, Double popularity,
+                 String posterPath, String releaseDate, String title, Double voteAverage){
         this.backdropPath = backdropPath;
-        this.genreIds = genreIds;
         this.id = id;
-        this.originalLanguage = originalLanguage;
         this.originalTitle = originalTitle;
         this.overview = overview;
         this.popularity = popularity;
         this.posterPath = posterPath;
         this.releaseDate = releaseDate;
         this.title = title;
-        this.video = video;
         this.voteAverage = voteAverage;
-        this.voteCount = voteCount;
     }
 
     /**
      * Get method to fill data from API and set method to fill the variable with the data
      */
-    public boolean getAdult() {
-        return adult;
-    }
-    public void setAdult(boolean adult){
-        this.adult = adult;
-    }
 
     public String getBackdropPath() {
-        return backdropPath;
+        return "http://image.tmdb.org/t/p/w342/" + backdropPath;
     }
     public void setBackdropPath(String backdropPath) {
         this.backdropPath = backdropPath;
-    }
-
-    public List<Integer> getGenreIds() {
-        return genreIds;
-    }
-    public void setGenreIds(List<Integer> genreIds){
-        this.genreIds = genreIds;
     }
 
     public Integer getId(){
@@ -93,13 +76,6 @@ public class Movie {
     }
     public void setId(Integer id){
         this.id = id;
-    }
-
-    public String getOriginalLanguage(){
-        return originalLanguage;
-    }
-    public void setOriginalLanguage(String originalLanguage){
-        this.originalLanguage = originalLanguage;
     }
 
     public String getOriginalTitle(){
@@ -144,13 +120,6 @@ public class Movie {
         this.title = title;
     }
 
-    public Boolean getVideo(){
-        return video;
-    }
-    public void setVideo(Boolean video){
-        this.video =video;
-    }
-
     public Double getVoteAverage(){
         return voteAverage;
     }
@@ -158,11 +127,53 @@ public class Movie {
         this.voteAverage = voteAverage;
     }
 
-    public Integer getVoteCount(){
-        return voteCount;
+    /**
+     * parcelling
+     */
+    // Parcelling part
+    public Movie(Parcel in){
+        this.backdropPath = in.readString();
+        this.id = in.readInt();
+        this.originalTitle = in.readString();
+        this.overview = in.readString();
+        this.popularity = in.readDouble();
+        this.posterPath = in.readString();
+        this.releaseDate = in.readString();
+        this.title = in.readString();
+        this.voteAverage = in.readDouble();
     }
-    public void setVoteCount(Integer voteCount){
-        this.voteCount = voteCount;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.backdropPath);
+        dest.writeInt(this.id);
+        dest.writeString(this.originalTitle);
+        dest.writeString(this.overview);
+        dest.writeDouble(this.popularity);
+        dest.writeString(this.posterPath);
+        dest.writeString(this.releaseDate);
+        dest.writeString(this.title);
+        dest.writeDouble(this.voteAverage);
+    }
+
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "backdropPath='" + backdropPath + '\'' +
+                ", id='" + id + '\'' +
+                ", originalTitle='" + originalTitle + '\'' +
+                ", overview='" + overview + '\'' +
+                ", popularity='" + popularity + '\'' +
+                ", posterPath='" + posterPath + '\'' +
+                ", releaseDate='" + releaseDate + '\'' +
+                ", title='" + title + '\'' +
+                ", voteAverage='" + voteAverage + '\'' +
+                '}';
     }
 
 }

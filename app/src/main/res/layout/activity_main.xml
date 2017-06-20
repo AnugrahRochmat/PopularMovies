@@ -17,6 +17,7 @@
         android:padding="16dp"
         android:text="An error has occured. Try again and check your internet connection..."
         android:textSize="20sp"
+        android:layout_above="@+id/progress_bar"
         android:visibility="invisible"/>
 
     <ProgressBar

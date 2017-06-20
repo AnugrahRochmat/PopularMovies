@@ -1,6 +1,7 @@
 package com.example.android.myapplication.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.android.myapplication.R;
+import com.example.android.myapplication.activity.MovieDetailActivity;
 import com.example.android.myapplication.model.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -24,12 +26,23 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
     private List<Movie> movies;
     private Context context;
 
-    public static class PosterViewHolder extends RecyclerView.ViewHolder {
-        ImageView posterImage;
+    public class PosterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public final ImageView posterImage;
 
         public PosterViewHolder(View view) {
             super(view);
-            posterImage = (ImageView) view.findViewById(R.id.poster_image);
+            posterImage = view.findViewById(R.id.poster_image);
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Movie movie = movies.get(getAdapterPosition());
+
+            Intent intentToStartDetailActivity = new Intent(v.getContext(), MovieDetailActivity.class);
+            intentToStartDetailActivity.putExtra("movie", movie);
+
+            v.getContext().startActivity(intentToStartDetailActivity);
         }
     }
 
@@ -50,7 +63,8 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
 
     @Override
     public void onBindViewHolder(PosterViewHolder holder, final int position) {
-        Picasso.with(context).load(movies.get(position).getPosterPath()).into(holder.posterImage);
+        Movie movie = movies.get(position);
+        Picasso.with(context).load(movie.getPosterPath()).into(holder.posterImage);
     }
 
     @Override
@@ -62,4 +76,5 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
         this.movies = movies;
         notifyDataSetChanged();
     }
+
 }
