@@ -10,6 +10,11 @@ import com.example.android.myapplication.R;
 import com.example.android.myapplication.model.Movie;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class MovieDetailActivity extends AppCompatActivity {
 
     /**
@@ -50,13 +55,12 @@ public class MovieDetailActivity extends AppCompatActivity {
             title.setText(movie.getTitle());
             Picasso.with(this).load(movie.getPosterPath()).into(posterImage);
             originalTitle.setText(movie.getOriginalTitle());
-            voteAverage.setText(movie.getVoteAverage().toString());
-            releasedDate.setText(movie.getReleaseDate());
+            voteAverage.setText(movie.getVoteAverage().toString() + " / 10 ");
+            releasedDate.setText(getParsedDate(movie.getReleaseDate()));
             synopsis.setText(movie.getOverview());
         } else {
             finish();
         }
-
     }
 
     @Override
@@ -66,6 +70,19 @@ public class MovieDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public String getParsedDate(String stringDate) {
+        String parsedResult = null;
+        DateFormat fromFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat toFormat = new SimpleDateFormat("MMM dd, yyyy");
+        try {
+            Date parseDate = fromFormat.parse(stringDate);
+            parsedResult = toFormat.format(parseDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return parsedResult;
     }
 
 }
