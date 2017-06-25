@@ -27,7 +27,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:fontFamily="sans-serif-smallcaps"
-                android:text="Wonder Woman"
                 android:textColor="#FFFFFF"
                 android:layout_gravity="bottom"
                 android:paddingLeft="16dp"
@@ -54,8 +53,7 @@
                         android:id="@+id/tv_detail_poster_image"
                         android:layout_width="130dp"
                         android:layout_height="180dp"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/wonderwoman" />
+                        android:scaleType="fitXY" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -70,7 +68,6 @@
                         android:fontFamily="sans-serif-condensed"
                         android:paddingBottom="8dp"
                         android:paddingLeft="4dp"
-                        android:text="Wonder Woman"
                         android:textColor="#000000"
                         android:textSize="13sp"
                         android:textStyle="bold" />
@@ -90,7 +87,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="8.0 / 10"
                             android:textColor="#000000"
                             android:textSize="12sp" />
 
@@ -99,7 +95,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="June 19, 2017"
                             android:textColor="#000000"
                             android:textSize="12sp"
                             android:paddingLeft="8dp"/>
@@ -112,7 +107,6 @@
                 android:id="@+id/tv_detail_synopsis"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/detail_synopsis"
                 android:textColor="#000000"
                 android:textSize="12sp"/>
 

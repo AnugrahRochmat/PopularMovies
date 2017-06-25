@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">Pop Movies</string>
+    <string name="error_message">We are unable to start the application. Please try to restart it and check your internet connection.</string>
+
     <string name="most_popular">Popular Movies</string>
     <string name="top_rated">Top Rated</string>
+
     <string name="movie_detail">Movie Detail</string>
     <string name="detail_synopsis">An Amazon princess comes to the world of Man to become the greatest of the female superheroes.</string>
 </resources>
