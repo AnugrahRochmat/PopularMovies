@@ -16,7 +16,4 @@ public interface ApiInterface {
     @GET("movie/{sort_by}")
     Call<MoviesResponse> getMovies(@Path("sort_by") String sortBy, @Query("api_key") String apiKey);
 
-
-    @GET("movie/{id}")
-    Call<MoviesResponse> getMovieDetails(@Path("id") int id, @Query("api_key") String apiKey);
 }

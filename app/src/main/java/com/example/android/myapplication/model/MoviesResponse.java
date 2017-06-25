@@ -9,8 +9,9 @@ import java.util.List;
  */
 
 public class MoviesResponse {
+
     /**
-     * Declaration variable
+     * Variable Declaration
      */
     @SerializedName("page")
     private Integer page;
@@ -21,6 +22,9 @@ public class MoviesResponse {
     @SerializedName("total_results")
     private Integer totalResults;
 
+    /**
+     * Get method to fill data from API and set method to fill the variable with the data
+     */
     public int getPage() {
         return page;
     }

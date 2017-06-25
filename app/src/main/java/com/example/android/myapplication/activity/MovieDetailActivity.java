@@ -18,7 +18,7 @@ import java.util.Date;
 public class MovieDetailActivity extends AppCompatActivity {
 
     /**
-     * Declare variable
+     * Variable Declaration
      */
 
     private ImageView backdropImage;
@@ -63,6 +63,11 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Make (up button) behaviour like (back button)
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -72,6 +77,11 @@ public class MovieDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Parsed released DATE format
+     * @param stringDate
+     * @return
+     */
     public String getParsedDate(String stringDate) {
         String parsedResult = null;
         DateFormat fromFormat = new SimpleDateFormat("yyyy-MM-dd");

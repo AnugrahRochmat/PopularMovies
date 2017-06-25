@@ -21,11 +21,14 @@ import java.util.List;
 
 public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterViewHolder> {
     /**
-     * Declaration variable
+     * Variable Declaration
      */
     private List<Movie> movies;
     private Context context;
 
+    /**
+     * ViewHolder to contain a view for list item movie
+     */
     public class PosterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final ImageView posterImage;
 
@@ -35,6 +38,10 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
             view.setOnClickListener(this);
         }
 
+        /**
+         * Handle movie item from a movie list that was clicked
+         * @param v
+         */
         @Override
         public void onClick(View v) {
             Movie movie = movies.get(getAdapterPosition());
@@ -46,11 +53,17 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
         }
     }
 
+    /**
+     * PosterAdapter class constructor
+     * @param movies
+     * @param context
+     */
     public PosterAdapter(List<Movie> movies, Context context) {
         this.movies = movies;
         this.context = context;
     }
 
+    
     @Override
     public PosterAdapter.PosterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         Context context = viewGroup.getContext();

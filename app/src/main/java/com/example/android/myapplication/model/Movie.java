@@ -5,10 +5,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-
 
 /**
  * Created by Anugrah on 6/15/17.
@@ -27,7 +23,7 @@ public class Movie implements Parcelable{
     };
 
     /**
-     * Declaration variable to be stored data from API
+     * Variable Declaration
      */
     @SerializedName("backdrop_path")
     private String backdropPath;
@@ -67,7 +63,6 @@ public class Movie implements Parcelable{
     /**
      * Get method to fill data from API and set method to fill the variable with the data
      */
-
     public String getBackdropPath() {
         return "http://image.tmdb.org/t/p/w342/" + backdropPath;
     }
@@ -132,9 +127,8 @@ public class Movie implements Parcelable{
     }
 
     /**
-     * parcelling
+     * Parcelling
      */
-    // Parcelling part
     public Movie(Parcel in){
         this.backdropPath = in.readString();
         this.id = in.readInt();

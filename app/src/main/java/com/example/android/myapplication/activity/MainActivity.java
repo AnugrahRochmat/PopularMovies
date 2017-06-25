@@ -29,14 +29,17 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
-    private ProgressBar progressBar;
-    private TextView errorMessage;
-
     /**
      * API KEY here
      */
     private static final String API_KEY = BuildConfig.API_KEY;
+
+    /**
+     * Variable Declaration
+     */
+    private static final String TAG = MainActivity.class.getSimpleName();
+    private ProgressBar progressBar;
+    private TextView errorMessage;
 
     private RecyclerView recyclerView;
     private PosterAdapter adapter;
@@ -77,6 +80,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * AsyncTask
+     */
     public class FetchMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
 
         private String fetchSortBy;
@@ -118,12 +124,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Create sort_by menu
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.sort_by, menu);
         return true;
     }
 
+    /**
+     * Handle sort_by menu selected by user
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
