@@ -58,6 +58,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             voteAverage.setText(movie.getVoteAverage().toString() + " / 10 ");
             releasedDate.setText(getParsedDate(movie.getReleaseDate()));
             synopsis.setText(movie.getOverview());
+            setTitle(movie.getTitle());
         } else {
             finish();
         }
