@@ -1,7 +1,9 @@
 package com.example.android.myapplication.activity;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,7 +24,6 @@ public class MovieDetailActivity extends AppCompatActivity {
      */
 
     private ImageView backdropImage;
-    private TextView title;
     private ImageView posterImage;
     private TextView originalTitle;
     private TextView voteAverage;
@@ -33,12 +34,18 @@ public class MovieDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
+        final Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         /**
          * Object reference with layout id
          */
         backdropImage = (ImageView) findViewById(R.id.tv_detail_backdrop_image);
-        title = (TextView) findViewById(R.id.tv_detail_title);
         posterImage = (ImageView) findViewById(R.id.tv_detail_poster_image);
         originalTitle = (TextView) findViewById(R.id.tv_detail_original_title);
         voteAverage = (TextView) findViewById(R.id.tv_detail_vote_average);
@@ -52,7 +59,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         if ( data != null) {
             Movie movie = data.getParcelable("movie");
             Picasso.with(this).load(movie.getBackdropPath()).into(backdropImage);
-            title.setText(movie.getTitle());
             Picasso.with(this).load(movie.getPosterPath()).into(posterImage);
             originalTitle.setText(movie.getOriginalTitle());
             voteAverage.setText(movie.getVoteAverage().toString() + " / 10 ");
