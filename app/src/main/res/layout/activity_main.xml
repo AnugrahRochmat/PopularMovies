@@ -14,16 +14,16 @@
         android:id="@+id/error_messsage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:padding="@dimen/margin_padding_16"
         android:text="@string/error_message"
-        android:textSize="20sp"
+        android:textSize="@dimen/error_message_text_size"
         android:layout_above="@+id/progress_bar"
         android:visibility="invisible"/>
 
     <ProgressBar
         android:id="@+id/progress_bar"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/progress_bar_dimension"
+        android:layout_height="@dimen/progress_bar_dimension"
         android:layout_centerInParent="true"
         android:visibility="invisible"/>
 

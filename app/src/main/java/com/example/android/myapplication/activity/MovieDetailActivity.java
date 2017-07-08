@@ -9,7 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.android.myapplication.BuildConfig;
@@ -54,6 +56,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private TextView voteAverage;
     private TextView releasedDate;
     private TextView synopsis;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +79,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         voteAverage = (TextView) findViewById(R.id.tv_detail_vote_average);
         releasedDate = (TextView) findViewById(R.id.tv_detail_released_date);
         synopsis = (TextView) findViewById(R.id.tv_detail_synopsis);
+        progressBar = (ProgressBar) findViewById(R.id.detail_progress_bar);
 
         /**
          * getIntent from MainActivity
@@ -163,6 +167,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -182,6 +187,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(List<Review> reviews) {
+            progressBar.setVisibility(View.INVISIBLE);
             if (reviews != null) {
                 reviewAdapter.setReviewsData(reviews);
             }

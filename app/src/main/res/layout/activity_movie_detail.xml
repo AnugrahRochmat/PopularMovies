@@ -10,7 +10,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="@dimen/appbar_height"
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
@@ -22,8 +22,8 @@
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:expandedTitleTextAppearance="@style/Toolbar.TitleText"
-            app:expandedTitleMarginStart="16dp"
-            app:expandedTitleMarginBottom="16dp">
+            app:expandedTitleMarginStart="@dimen/margin_padding_16"
+            app:expandedTitleMarginBottom="@dimen/margin_padding_16">
 
             <ImageView
                 android:id="@+id/tv_detail_backdrop_image"
@@ -44,5 +44,17 @@
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/movie_detail_content" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:id="@+id/detail_progress_bar"
+            android:layout_width="@dimen/progress_bar_dimension"
+            android:layout_height="@dimen/progress_bar_dimension"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+
 
 </android.support.design.widget.CoordinatorLayout>

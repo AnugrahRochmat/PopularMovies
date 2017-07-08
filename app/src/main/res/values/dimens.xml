@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="progress_bar_dimension">50dp</dimen>
+    <dimen name="error_message_text_size">20sp</dimen>
+    <dimen name="appbar_height">200dp</dimen>
+    <dimen name="star_dimension">20dp</dimen>
+
+    <dimen name="poster_image_width">130dp</dimen>
+    <dimen name="poster_image_height">180dp</dimen>
+
+    <dimen name="text_size_9">9sp</dimen>
+    <dimen name="text_size_12">12sp</dimen>
+
+    <dimen name="margin_padding_4">4dp</dimen>
+    <dimen name="margin_padding_8">8dp</dimen>
+    <dimen name="margin_padding_16">16dp</dimen>
+</resources>
