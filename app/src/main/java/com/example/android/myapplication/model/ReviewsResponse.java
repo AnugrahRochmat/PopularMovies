@@ -26,11 +26,11 @@ public class ReviewsResponse {
     /**
      * Get method to fill data from API and set method to fill the variable with the data
      */
-    public int getRMovieId() {
+    public int getMovieId() {
         return id;
     }
 
-    public void setRMovieId(int page) {
+    public void setMovieId(int page) {
         this.id = id;
     }
 

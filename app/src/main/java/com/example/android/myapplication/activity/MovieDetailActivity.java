@@ -17,9 +17,12 @@ import android.widget.TextView;
 import com.example.android.myapplication.BuildConfig;
 import com.example.android.myapplication.R;
 import com.example.android.myapplication.adapter.ReviewAdapter;
+import com.example.android.myapplication.adapter.TrailerAdapter;
 import com.example.android.myapplication.model.Movie;
 import com.example.android.myapplication.model.Review;
 import com.example.android.myapplication.model.ReviewsResponse;
+import com.example.android.myapplication.model.Trailer;
+import com.example.android.myapplication.model.TrailersResponse;
 import com.example.android.myapplication.rest.ApiClient;
 import com.example.android.myapplication.rest.ApiInterface;
 import com.squareup.picasso.Picasso;
@@ -41,12 +44,21 @@ public class MovieDetailActivity extends AppCompatActivity {
      * API KEY here
      */
     private static final String API_KEY = BuildConfig.API_KEY;
-
     private static final String TAG = MainActivity.class.getSimpleName();
+    private String movieId;
+
+    /**
+     * Review
+     */
     private RecyclerView reviewRecyclerView;
     private ReviewAdapter reviewAdapter;
 
-    private String movieId;
+    /**
+     * Trailer
+     */
+    private RecyclerView trailerRecyclerView;
+    private TrailerAdapter trailerAdapter;
+
     /**
      * Variable Declaration for Details layout
      */
@@ -101,17 +113,30 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
 
         /**
-         * Object reference for review layout
+         * Review Recycler View
          */
         reviewRecyclerView = (RecyclerView) findViewById(R.id.review_recycler_view);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        reviewRecyclerView.setLayoutManager(linearLayoutManager);
+        LinearLayoutManager reviewLayoutManager = new LinearLayoutManager(this);
+        reviewRecyclerView.setLayoutManager(reviewLayoutManager);
         reviewRecyclerView.setHasFixedSize(true);
 
         reviewAdapter = new ReviewAdapter(new ArrayList<Review>(), getApplicationContext());
         reviewRecyclerView.setAdapter(reviewAdapter);
 
         new FetchReviewsTask(movieId).execute();
+
+        /**
+         * Trailer Recycler View
+         */
+        trailerRecyclerView = (RecyclerView) findViewById(R.id.trailer_recycler_view);
+        LinearLayoutManager trailerLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        trailerRecyclerView.setLayoutManager(trailerLayoutManager);
+        trailerRecyclerView.setHasFixedSize(true);
+
+        trailerAdapter = new TrailerAdapter(new ArrayList<Trailer>(), getApplicationContext());
+        trailerRecyclerView.setAdapter(trailerAdapter);
+
+        new FetchTrailersTask(movieId).execute();
     }
 
     /**
@@ -146,13 +171,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         return parsedResult;
     }
 
-
-    //TODO 1: Create Videos and Reviews section Layout (Change include become recycler view)
-    //TODO 2: Create Videos and Reviews Class to parse data from API
-    //TODO 2: Create FetchTask for Videos and Reviews
-    //TODO 3: Create adapter for Videos and Reviews
-    //TODO 4: Add progress bar inside review
-
     /**
      * AsyncTask for Review
      */
@@ -173,7 +191,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         @Override
         protected List<Review> doInBackground(Void... params) {
             ApiInterface apiservice = ApiClient.getClient().create(ApiInterface.class);
-            Call<ReviewsResponse> call = apiservice.getReviews(fetchMovieId,API_KEY);
+            Call<ReviewsResponse> call = apiservice.getReviews(fetchMovieId, API_KEY);
 
             try {
                 Response<ReviewsResponse> response = call.execute();
@@ -190,6 +208,45 @@ public class MovieDetailActivity extends AppCompatActivity {
             progressBar.setVisibility(View.INVISIBLE);
             if (reviews != null) {
                 reviewAdapter.setReviewsData(reviews);
+            }
+        }
+    }
+
+    /**
+     * AsyncTask for Trailer
+     */
+    public class FetchTrailersTask extends AsyncTask<Void, Void, List<Trailer>> {
+
+        private String fetchMovieId;
+
+        public FetchTrailersTask(String id) { fetchMovieId = id; }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected List<Trailer> doInBackground(Void... params) {
+            ApiInterface apiservice = ApiClient.getClient().create(ApiInterface.class);
+            Call<TrailersResponse> call = apiservice.getTrailers(fetchMovieId, API_KEY);
+
+            try {
+                Response<TrailersResponse> response = call.execute();
+                List<Trailer> trailers = response.body().getResults();
+                return trailers;
+            } catch (IOException e) {
+                Log.e(TAG, "A problem occured ", e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<Trailer> trailers) {
+            progressBar.setVisibility(View.INVISIBLE);
+            if (trailers != null) {
+                trailerAdapter.setTrailersData(trailers);
             }
         }
     }

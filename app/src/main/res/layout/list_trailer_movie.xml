@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/margin_padding_8">
+
+    <ImageView
+        android:src="@color/colorGreyLight"
+        android:id="@+id/trailer_thumbnail"
+        android:layout_width="@dimen/trailer_thubnail_width"
+        android:layout_height="@dimen/trailer_thumbnail_height"
+        android:scaleType="centerCrop"/>
+
+    <ImageView
+        android:layout_width="@dimen/play_circle_dimension"
+        android:layout_height="@dimen/play_circle_dimension"
+        android:layout_gravity="center"
+        android:src="@drawable/play_circle"/>
+
+</FrameLayout>
