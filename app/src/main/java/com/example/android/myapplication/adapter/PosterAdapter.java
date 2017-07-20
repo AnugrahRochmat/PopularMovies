@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +18,7 @@ import com.example.android.myapplication.activity.MovieDetailActivity;
 import com.example.android.myapplication.model.Movie;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -81,28 +85,16 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
     @Override
     public void onBindViewHolder(PosterViewHolder holder, final int position) {
         Movie movie = movies.get(position);
-        //String posterPath = movie.getPosterPath();
 
         String url = "http://image.tmdb.org/t/p/w342/";
-        Picasso.with(context).load(url + movie.getPosterPath()).placeholder(R.drawable.placeholder).into(holder.posterImage);
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/pop_movies/" + movie.getId() + ".jpg");
 
-//        Picasso.with(context)
-//                .load(movie.getPosterPath())
-//                .into(new Target() {
-//                    @Override
-//                    public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-//                        bitmapImage = bitmap;
-//                    }
-//                    @Override
-//                    public void onBitmapFailed(Drawable errorDrawable) {
-//                    }
-//
-//                    @Override
-//                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-//                        }
-//                    });
-//
-//        holder.posterImage.setImageBitmap(bitmapImage);
+        if (isOnline()) {
+            Picasso.with(context).load(url + movie.getPosterPath()).placeholder(R.drawable.placeholder).into(holder.posterImage);
+        } else {
+            Picasso.with(context).load(myDir).into(holder.posterImage);
+        }
 
     }
 
@@ -131,9 +123,13 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
                 movies.add(movie);
             } while (cursor.moveToNext());
         }
-        //return movies;
         notifyDataSetChanged();
     }
 
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
+    }
 
 }

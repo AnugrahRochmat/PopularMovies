@@ -11,4 +11,6 @@
 
     <string name="mark_as_favourite">Mark As Favourite</string>
     <string name="remove_from_favourite">Remove From Favourite</string>
+
+    <string name="share_tailer">Share Trailer</string>
 </resources>

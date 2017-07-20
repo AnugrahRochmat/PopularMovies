@@ -1,16 +1,26 @@
 package com.example.android.myapplication.activity;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -31,7 +41,10 @@ import com.example.android.myapplication.model.TrailersResponse;
 import com.example.android.myapplication.rest.ApiClient;
 import com.example.android.myapplication.rest.ApiInterface;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -51,6 +64,11 @@ public class MovieDetailActivity extends AppCompatActivity {
     private static final String API_KEY = BuildConfig.API_KEY;
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    private String root = Environment.getExternalStorageDirectory().toString();
+    private File myDir = new File(root + "/pop_movies");
+
+    private ShareActionProvider mShareActionProvider;
+
     /**
      * Variable to store data from intent
      */
@@ -61,6 +79,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private String moviePoster;
     private String movieReleaseDate;
     private String movieVoteAverage;
+    private Bitmap bitmapImage;
 
     /**
      * Review
@@ -131,12 +150,35 @@ public class MovieDetailActivity extends AppCompatActivity {
             // Display data from intent
             String url = "http://image.tmdb.org/t/p/w342/";
             Picasso.with(this).load(url + movieBackdropPath).into(backdropImage);
-            Picasso.with(this).load(url + moviePoster).into(posterImage);
+            File extPosterPath = new File(root + "/pop_movies/" + movie.getId() + ".jpg");
+                if (isOnline()){
+                    Picasso.with(this).load(url + moviePoster).into(posterImage);
+                } else {
+                    Picasso.with(this).load(extPosterPath).into(posterImage);
+                }
             originalTitle.setText(movieTitle);
             voteAverage.setText(movieVoteAverage + " / 10 ");
             releasedDate.setText(getParsedDate(movie.getReleaseDate()));
             synopsis.setText(movieOverview);
             setTitle(movie.getTitle());
+
+            // Load image into target
+            Picasso.with(this)
+                    .load(url + movie.getPosterPath())
+                    .into(new Target() {
+                        @Override
+                        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+                            bitmapImage = bitmap;
+                        }
+                        @Override
+                        public void onBitmapFailed(Drawable errorDrawable) {
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+                        }
+                    });
+
         } else {
             finish();
         }
@@ -173,6 +215,16 @@ public class MovieDetailActivity extends AppCompatActivity {
         updateFavourites();
 
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (isOnline()) {
+            getMenuInflater().inflate(R.menu.share_trailer, menu);
+            MenuItem item = menu.findItem(R.id.share_trailer);
+            mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+        }
+        return true;
     }
 
     /**
@@ -283,6 +335,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             progressBar.setVisibility(View.INVISIBLE);
             if (trailers != null) {
                 trailerAdapter.setTrailersData(trailers);
+                Trailer trailer = trailers.get(0);
+                setShareIntent(trailer);
             }
         }
     }
@@ -383,6 +437,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 addFavourite(view);
+                SaveImage(bitmapImage);
             }
         });
 
@@ -390,8 +445,54 @@ public class MovieDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 removeFavourite();
+
+                String fname = movieId + ".jpg";
+                File file = new File (myDir, fname);
+                if (file.exists ()) file.delete ();
             }
         });
     }
 
+    /**
+     * save image to external storage
+     */
+    private void SaveImage(Bitmap finalBitmap) {
+
+        myDir.mkdirs();
+
+        String fname = movieId + ".jpg";
+        File file = new File (myDir, fname);
+        if (file.exists ()) file.delete ();
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 70, out);
+            out.flush();
+            out.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * check online status
+     */
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
+    }
+
+    /**
+     * set share intent
+     */
+    private void setShareIntent(Trailer trailer) {
+        Intent shareIntent = new Intent();
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, trailer.getName() + ": " + trailer.getVideoUrl());
+        shareIntent.setType("text/plain");
+
+        mShareActionProvider.setShareIntent(shareIntent);
+    }
 }
