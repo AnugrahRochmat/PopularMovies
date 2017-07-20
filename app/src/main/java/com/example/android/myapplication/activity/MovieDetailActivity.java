@@ -1,5 +1,8 @@
 package com.example.android.myapplication.activity;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -10,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -18,6 +22,7 @@ import com.example.android.myapplication.BuildConfig;
 import com.example.android.myapplication.R;
 import com.example.android.myapplication.adapter.ReviewAdapter;
 import com.example.android.myapplication.adapter.TrailerAdapter;
+import com.example.android.myapplication.data.MovieContract;
 import com.example.android.myapplication.model.Movie;
 import com.example.android.myapplication.model.Review;
 import com.example.android.myapplication.model.ReviewsResponse;
@@ -45,7 +50,17 @@ public class MovieDetailActivity extends AppCompatActivity {
      */
     private static final String API_KEY = BuildConfig.API_KEY;
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    /**
+     * Variable to store data from intent
+     */
     private String movieId;
+    private String movieTitle;
+    private String movieOverview;
+    private String movieBackdropPath;
+    private String moviePoster;
+    private String movieReleaseDate;
+    private String movieVoteAverage;
 
     /**
      * Review
@@ -69,6 +84,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     private TextView releasedDate;
     private TextView synopsis;
     private ProgressBar progressBar;
+    private Button favButton;
+    private Button remButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +109,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         releasedDate = (TextView) findViewById(R.id.tv_detail_released_date);
         synopsis = (TextView) findViewById(R.id.tv_detail_synopsis);
         progressBar = (ProgressBar) findViewById(R.id.detail_progress_bar);
+        favButton = (Button) findViewById(R.id.favourite_button);
+        remButton = (Button) findViewById(R.id.remove_favourite_button);
 
         /**
          * getIntent from MainActivity
@@ -99,15 +118,25 @@ public class MovieDetailActivity extends AppCompatActivity {
         Bundle data = getIntent().getExtras();
         if ( data != null) {
             Movie movie = data.getParcelable("movie");
-            Picasso.with(this).load(movie.getBackdropPath()).into(backdropImage);
-            Picasso.with(this).load(movie.getPosterPath()).into(posterImage);
-            originalTitle.setText(movie.getOriginalTitle());
-            voteAverage.setText(movie.getVoteAverage().toString() + " / 10 ");
-            releasedDate.setText(getParsedDate(movie.getReleaseDate()));
-            synopsis.setText(movie.getOverview());
-            setTitle(movie.getTitle());
 
+            // Store data from intent to assigned variable
             movieId = movie.getId().toString();
+            movieTitle = movie.getOriginalTitle();
+            movieOverview = movie.getOverview();
+            movieBackdropPath = movie.getBackdropPath();
+            moviePoster = movie.getPosterPath();
+            movieReleaseDate = movie.getReleaseDate();
+            movieVoteAverage = movie.getVoteAverage().toString();
+
+            // Display data from intent
+            String url = "http://image.tmdb.org/t/p/w342/";
+            Picasso.with(this).load(url + movieBackdropPath).into(backdropImage);
+            Picasso.with(this).load(url + moviePoster).into(posterImage);
+            originalTitle.setText(movieTitle);
+            voteAverage.setText(movieVoteAverage + " / 10 ");
+            releasedDate.setText(getParsedDate(movie.getReleaseDate()));
+            synopsis.setText(movieOverview);
+            setTitle(movie.getTitle());
         } else {
             finish();
         }
@@ -137,6 +166,13 @@ public class MovieDetailActivity extends AppCompatActivity {
         trailerRecyclerView.setAdapter(trailerAdapter);
 
         new FetchTrailersTask(movieId).execute();
+
+        /**
+         * Favourites Button
+         */
+        updateFavourites();
+
+
     }
 
     /**
@@ -250,4 +286,112 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * addFavourite
+     */
+    public void addFavourite(View view) {
+        new AsyncTask<Void,Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                if (!isFavourite()) {
+                    ContentValues contentValues = new ContentValues();
+
+                    contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movieId);
+                    contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, movieTitle);
+                    contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_OVERVIEW, movieOverview);
+                    contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_BACKDROP, movieBackdropPath);
+                    contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER, moviePoster);
+                    contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE, movieReleaseDate);
+                    contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_VOTE_AVERAGE, movieVoteAverage);
+
+                    getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                updateFavourites();
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    /**
+     * removeFavourite
+     */
+    public void removeFavourite() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                if (isFavourite()) {
+                    Uri uri = MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendEncodedPath(movieId).build();
+                    getContentResolver().delete(uri, null, null);
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                updateFavourites();
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    /**
+     * isFavourite
+     */
+    public boolean isFavourite(){
+        Uri uri = MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendEncodedPath(movieId).build();
+        Cursor cursor = getContentResolver().query(uri,
+                null,
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = ? ",
+                null,
+                null
+        );
+        if (cursor != null && cursor.moveToFirst()) {
+            cursor.close();
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    /**
+     * updateFavourites Button
+     */
+    private void updateFavourites() {
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                return isFavourite();
+            }
+
+            @Override
+            protected void onPostExecute(Boolean isFavourite) {
+                if (isFavourite){
+                    remButton.setVisibility(View.VISIBLE);
+                    favButton.setVisibility(View.GONE);
+                } else {
+                    favButton.setVisibility(View.VISIBLE);
+                    remButton.setVisibility(View.GONE);
+                }
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        favButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addFavourite(view);
+            }
+        });
+
+        remButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                removeFavourite();
+            }
+        });
+    }
+
 }

@@ -70,7 +70,27 @@
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="@dimen/text_size_12"
                         android:paddingLeft="@dimen/margin_padding_8"/>
+                    
                 </LinearLayout>
+                
+                <Button
+                    android:id="@+id/favourite_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mark_as_favourite"
+                    android:textSize="@dimen/text_size_9"
+                    android:textColor="@android:color/primary_text_dark"
+                    android:background="@color/colorPrimary"
+                    android:visibility="visible"/>
+                <Button
+                    android:id="@+id/remove_favourite_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/remove_from_favourite"
+                    android:textSize="@dimen/text_size_9"
+                    android:textColor="@android:color/primary_text_dark"
+                    android:background="@color/colorPrimary"
+                    android:visibility="gone"/>
 
             </LinearLayout>
         </LinearLayout>

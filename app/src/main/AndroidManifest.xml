@@ -25,6 +25,11 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".activity.MainActivity">
         </activity>
+
+        <provider
+            android:authorities="com.example.android.myapplication"
+            android:name="com.example.android.myapplication.data.MovieProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>

@@ -47,13 +47,13 @@ public class Movie implements Parcelable{
     /**
      * Movie class constructor
      */
-    public Movie(String backdropPath, Integer id, String originalTitle, String overview, Double popularity,
+    public Movie(String backdropPath, Integer id, String originalTitle, String overview,
                  String posterPath, String releaseDate, String title, Double voteAverage){
         this.backdropPath = backdropPath;
         this.id = id;
         this.originalTitle = originalTitle;
         this.overview = overview;
-        this.popularity = popularity;
+        //this.popularity = popularity;
         this.posterPath = posterPath;
         this.releaseDate = releaseDate;
         this.title = title;
@@ -64,7 +64,7 @@ public class Movie implements Parcelable{
      * Get method to fill data from API and set method to fill the variable with the data
      */
     public String getBackdropPath() {
-        return "http://image.tmdb.org/t/p/w342/" + backdropPath;
+        return backdropPath;
     }
     public void setBackdropPath(String backdropPath) {
         this.backdropPath = backdropPath;
@@ -99,7 +99,7 @@ public class Movie implements Parcelable{
     }
 
     public String getPosterPath(){
-        return "http://image.tmdb.org/t/p/w342/" + posterPath;
+        return posterPath;
     }
     public void setPosterPath(String posterPath){
         this.posterPath = posterPath;
@@ -134,7 +134,7 @@ public class Movie implements Parcelable{
         this.id = in.readInt();
         this.originalTitle = in.readString();
         this.overview = in.readString();
-        this.popularity = in.readDouble();
+        //this.popularity = in.readDouble();
         this.posterPath = in.readString();
         this.releaseDate = in.readString();
         this.title = in.readString();
@@ -152,7 +152,7 @@ public class Movie implements Parcelable{
         dest.writeInt(this.id);
         dest.writeString(this.originalTitle);
         dest.writeString(this.overview);
-        dest.writeDouble(this.popularity);
+        //dest.writeDouble(this.popularity);
         dest.writeString(this.posterPath);
         dest.writeString(this.releaseDate);
         dest.writeString(this.title);
@@ -166,7 +166,7 @@ public class Movie implements Parcelable{
                 ", id='" + id + '\'' +
                 ", originalTitle='" + originalTitle + '\'' +
                 ", overview='" + overview + '\'' +
-                ", popularity='" + popularity + '\'' +
+                //", popularity='" + popularity + '\'' +
                 ", posterPath='" + posterPath + '\'' +
                 ", releaseDate='" + releaseDate + '\'' +
                 ", title='" + title + '\'' +

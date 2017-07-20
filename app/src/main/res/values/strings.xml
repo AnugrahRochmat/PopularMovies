@@ -4,7 +4,11 @@
 
     <string name="most_popular">Popular Movies</string>
     <string name="top_rated">Top Rated</string>
+    <string name="favourites">Favourites</string>
 
     <string name="movie_detail">Movie Detail</string>
     <string name="detail_synopsis">An Amazon princess comes to the world of Man to become the greatest of the female superheroes.</string>
+
+    <string name="mark_as_favourite">Mark As Favourite</string>
+    <string name="remove_from_favourite">Remove From Favourite</string>
 </resources>

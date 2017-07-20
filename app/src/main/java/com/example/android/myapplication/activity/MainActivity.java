@@ -1,7 +1,11 @@
 package com.example.android.myapplication.activity;
 
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +19,7 @@ import android.widget.TextView;
 import com.example.android.myapplication.BuildConfig;
 import com.example.android.myapplication.R;
 import com.example.android.myapplication.adapter.PosterAdapter;
+import com.example.android.myapplication.data.MovieContract;
 import com.example.android.myapplication.model.Movie;
 import com.example.android.myapplication.model.MoviesResponse;
 import com.example.android.myapplication.rest.ApiClient;
@@ -27,7 +32,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     /**
      * API KEY here
@@ -47,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private String mSortBy;
     private String defaultSort;
 
+    private static final int FAVOURITES_LOADER_ID = 3;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         adapter = new PosterAdapter(new ArrayList<Movie>(),getApplicationContext());
         recyclerView.setAdapter(adapter);
 
+        //getSupportLoaderManager().initLoader(FAVOURITES_LOADER_ID,null,this);
         defaultSort = "popular";
         loadMovies(defaultSort);
 
@@ -124,6 +132,33 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
+        findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
+        switch (loaderId) {
+            case FAVOURITES_LOADER_ID:
+                return new CursorLoader(this,
+                        MovieContract.MovieEntry.CONTENT_URI,
+                        MovieContract.MovieEntry.MOVIE_COLUMNS,
+                        null,
+                        null,
+                        null);
+            default:
+                throw new RuntimeException("Loader Not Implemented: " + loaderId);
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        adapter.add(cursor);
+        findViewById(R.id.progress_bar).setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
     /**
      * Create sort_by menu
      * @param menu
@@ -145,14 +180,21 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.sb_popular:
                 mSortBy = "popular";
+                getSupportLoaderManager().destroyLoader(FAVOURITES_LOADER_ID);
                 loadMovies(mSortBy);
                 item.setChecked(true);
                 break;
             case R.id.sb_top_rated:
                 mSortBy = "top_rated";
+                getSupportLoaderManager().destroyLoader(FAVOURITES_LOADER_ID);
                 loadMovies(mSortBy);
                 item.setChecked(true);
                 break;
+            case R.id.sb_favourites:
+                recyclerView.setVisibility(View.VISIBLE);
+                errorMessage.setVisibility(View.INVISIBLE);
+                getSupportLoaderManager().initLoader(FAVOURITES_LOADER_ID, null, this);
+                item.setChecked(true);
             default:
                 break;
         }

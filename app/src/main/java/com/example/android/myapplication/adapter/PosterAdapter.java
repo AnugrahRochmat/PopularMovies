@@ -2,6 +2,8 @@ package com.example.android.myapplication.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +27,8 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
      */
     private List<Movie> movies;
     private Context context;
+
+    private Bitmap bitmapImage;
 
     /**
      * ViewHolder to contain a view for list item movie
@@ -77,7 +81,29 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
     @Override
     public void onBindViewHolder(PosterViewHolder holder, final int position) {
         Movie movie = movies.get(position);
-        Picasso.with(context).load(movie.getPosterPath()).into(holder.posterImage);
+        //String posterPath = movie.getPosterPath();
+
+        String url = "http://image.tmdb.org/t/p/w342/";
+        Picasso.with(context).load(url + movie.getPosterPath()).placeholder(R.drawable.placeholder).into(holder.posterImage);
+
+//        Picasso.with(context)
+//                .load(movie.getPosterPath())
+//                .into(new Target() {
+//                    @Override
+//                    public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+//                        bitmapImage = bitmap;
+//                    }
+//                    @Override
+//                    public void onBitmapFailed(Drawable errorDrawable) {
+//                    }
+//
+//                    @Override
+//                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+//                        }
+//                    });
+//
+//        holder.posterImage.setImageBitmap(bitmapImage);
+
     }
 
     @Override
@@ -89,5 +115,25 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
         this.movies = movies;
         notifyDataSetChanged();
     }
+
+    public void add(Cursor cursor) {
+        movies.clear();
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(0);
+                String title =  cursor.getString(1);
+                String overview = cursor.getString(2);
+                String backdrop = cursor.getString(3);
+                String poster = cursor.getString(4);
+                String release_date = cursor.getString(5);
+                Double vote_average = Double.parseDouble(cursor.getString(6));
+                Movie movie = new Movie(backdrop, id, title, overview, poster, release_date, title, vote_average);
+                movies.add(movie);
+            } while (cursor.moveToNext());
+        }
+        //return movies;
+        notifyDataSetChanged();
+    }
+
 
 }
