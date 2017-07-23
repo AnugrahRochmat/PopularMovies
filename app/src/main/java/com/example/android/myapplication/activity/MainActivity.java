@@ -24,6 +24,7 @@ import com.example.android.myapplication.model.Movie;
 import com.example.android.myapplication.model.MoviesResponse;
 import com.example.android.myapplication.rest.ApiClient;
 import com.example.android.myapplication.rest.ApiInterface;
+import com.facebook.stetho.Stetho;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,6 +59,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /**
+         * Trying stetho
+         */
+        // Create an InitializerBuilder
+        Stetho.InitializerBuilder initializerBuilder = Stetho.newInitializerBuilder(this);
+        // Enable Chrome DevTools
+        initializerBuilder.enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this));
+        // Initialize Stetho with the Initializer
+        Stetho.initialize(initializerBuilder.build());
 
         /**
          * RecyclerView with GridLayout Manager

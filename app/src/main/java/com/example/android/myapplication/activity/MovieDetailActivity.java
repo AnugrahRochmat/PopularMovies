@@ -446,6 +446,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 removeFavourite();
 
+                // remove savedimages from file system
                 String fname = movieId + ".jpg";
                 File file = new File (myDir, fname);
                 if (file.exists ()) file.delete ();

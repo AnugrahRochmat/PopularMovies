@@ -48,4 +48,8 @@ dependencies {
     // picasso
     compile 'com.squareup.picasso:picasso:2.5.2'
 
+    // stetho
+    compile 'com.facebook.stetho:stetho:1.1.1'
+    compile 'com.facebook.stetho:stetho-okhttp:1.1.1'
+
 }
