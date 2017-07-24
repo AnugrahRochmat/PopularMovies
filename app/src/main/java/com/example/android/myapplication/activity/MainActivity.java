@@ -50,11 +50,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private RecyclerView recyclerView;
     private PosterAdapter adapter;
 
-    private String mSortBy;
-    private String defaultSort = "popular";
+    private String mSortBy = "popular";
+    //private String defaultSort = "popular";
 
     private static final int FAVOURITES_LOADER_ID = 3;
     private static final String SAVED_MOVIES_KEY = "SAVED_MOVIES_KEY";
+    private static final String SAVED_SORT_KEY = "SAVED_SORT_KEY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,12 +90,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         //loadMovies(defaultSort);
 
         if (savedInstanceState != null) {
+            mSortBy = savedInstanceState.getString(SAVED_SORT_KEY);
             if (savedInstanceState.containsKey(SAVED_MOVIES_KEY)){
                 List<Movie> movies = savedInstanceState.getParcelableArrayList(SAVED_MOVIES_KEY);
                 adapter.setMoviesData(movies);
             }
         } else {
-            loadMovies(defaultSort);
+            loadMovies(mSortBy);
         }
 
 
@@ -191,6 +193,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.sort_by, menu);
+
+        switch (mSortBy) {
+            case "popular":
+                menu.findItem(R.id.sb_popular).setChecked(true);
+                break;
+            case "top_rated":
+                menu.findItem(R.id.sb_top_rated).setChecked(true);
+                break;
+            case "favourites":
+                menu.findItem(R.id.sb_favourites ).setChecked(true);
+                break;
+        }
         return true;
     }
 
@@ -215,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 item.setChecked(true);
                 break;
             case R.id.sb_favourites:
+                mSortBy = "favourites";
                 recyclerView.setVisibility(View.VISIBLE);
                 errorMessage.setVisibility(View.INVISIBLE);
                 getSupportLoaderManager().initLoader(FAVOURITES_LOADER_ID, null, this);
@@ -271,6 +286,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (mov != null && !mov.isEmpty()) {
             outState.putParcelableArrayList(SAVED_MOVIES_KEY, mov);
         }
+        outState.putString(SAVED_SORT_KEY, mSortBy);
     }
 }
 
