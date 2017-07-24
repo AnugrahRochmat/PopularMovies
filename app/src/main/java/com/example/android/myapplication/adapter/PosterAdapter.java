@@ -93,7 +93,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
         if (isOnline()) {
             Picasso.with(context).load(url + movie.getPosterPath()).placeholder(R.drawable.placeholder).into(holder.posterImage);
         } else {
-            Picasso.with(context).load(myDir).into(holder.posterImage);
+            Picasso.with(context).load(myDir).placeholder(R.drawable.placeholder).into(holder.posterImage);
         }
 
     }
@@ -106,6 +106,10 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
     public void setMoviesData(List<Movie> movies) {
         this.movies = movies;
         notifyDataSetChanged();
+    }
+
+    public List<Movie> getMovies() {
+        return movies;
     }
 
     public void add(Cursor cursor) {

@@ -63,6 +63,8 @@ public class MovieDetailActivity extends AppCompatActivity {
      */
     private static final String API_KEY = BuildConfig.API_KEY;
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String SAVED_TRAILERS_KEY = "SAVED_TRAILERS_KEY";
+    private static final String SAVED_REVIEWS_KEY = "SAVED_REVIEWS_KEY";
 
     private String root = Environment.getExternalStorageDirectory().toString();
     private File myDir = new File(root + "/pop_movies");
@@ -194,7 +196,16 @@ public class MovieDetailActivity extends AppCompatActivity {
         reviewAdapter = new ReviewAdapter(new ArrayList<Review>(), getApplicationContext());
         reviewRecyclerView.setAdapter(reviewAdapter);
 
-        new FetchReviewsTask(movieId).execute();
+        //new FetchReviewsTask(movieId).execute();
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SAVED_REVIEWS_KEY)){
+                List<Review> reviews = savedInstanceState.getParcelableArrayList(SAVED_REVIEWS_KEY);
+                reviewAdapter.setReviewsData(reviews);
+            }
+        } else {
+            new FetchReviewsTask(movieId).execute();
+        }
 
         /**
          * Trailer Recycler View
@@ -207,14 +218,21 @@ public class MovieDetailActivity extends AppCompatActivity {
         trailerAdapter = new TrailerAdapter(new ArrayList<Trailer>(), getApplicationContext());
         trailerRecyclerView.setAdapter(trailerAdapter);
 
-        new FetchTrailersTask(movieId).execute();
+        //new FetchTrailersTask(movieId).execute();
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SAVED_TRAILERS_KEY)){
+                List<Trailer> trailers = savedInstanceState.getParcelableArrayList(SAVED_TRAILERS_KEY);
+                trailerAdapter.setTrailersData(trailers);
+            }
+        } else {
+            new FetchTrailersTask(movieId).execute();
+        }
 
         /**
          * Favourites Button
          */
         updateFavourites();
-
-
     }
 
     @Override
@@ -495,5 +513,20 @@ public class MovieDetailActivity extends AppCompatActivity {
         shareIntent.setType("text/plain");
 
         mShareActionProvider.setShareIntent(shareIntent);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        ArrayList<Trailer> trail = new ArrayList<>(trailerAdapter.getTrailers());
+        if (trail != null && !trail.isEmpty()) {
+            outState.putParcelableArrayList(SAVED_TRAILERS_KEY, trail);
+        }
+
+        ArrayList<Review> rev = new ArrayList<>(reviewAdapter.getReviews());
+        if (rev != null && !rev.isEmpty()) {
+            outState.putParcelableArrayList(SAVED_REVIEWS_KEY, rev);
+        }
     }
 }

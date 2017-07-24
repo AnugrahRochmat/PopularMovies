@@ -75,5 +75,8 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
         notifyDataSetChanged();
     }
 
+    public List<Trailer> getTrailers() {
+        return trailers;
+    }
 
 }

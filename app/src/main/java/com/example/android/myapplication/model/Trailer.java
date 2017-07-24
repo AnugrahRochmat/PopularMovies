@@ -1,12 +1,26 @@
 package com.example.android.myapplication.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Anugrah on 7/10/17.
  */
 
-public class Trailer {
+public class Trailer implements Parcelable {
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
+
     /**
      * Variable Declaration
      */
@@ -70,4 +84,49 @@ public class Trailer {
 
     public String getType() { return  type;}
     public void setType(String type) { this.key = type; }
+
+    /**
+     * Parcelling
+     */
+    public Trailer(Parcel in) {
+        this.id = in.readString();
+        this.iso_639_1 = in.readString();
+        this.iso_3166_1 = in.readString();
+        this.key = in.readString();
+        this.name = in.readString();
+        this.site = in.readString();
+        this.size = in.readInt();
+        this.type = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.iso_639_1);
+        dest.writeString(this.iso_3166_1);
+        dest.writeString(this.key);
+        dest.writeString(this.name);
+        dest.writeString(this.site);
+        dest.writeInt(this.size);
+        dest.writeString(this.type);
+    }
+
+    @Override
+    public String toString() {
+        return "Trailer{" +
+                "id='" + id + '\'' +
+                ", iso_639_1='" + iso_639_1 + '\'' +
+                ", iso_3166_1='" + iso_3166_1 + '\'' +
+                ", key='" + key + '\'' +
+                ", name='" + name + '\'' +
+                ", site='" + site + '\'' +
+                ", size='" + size + '\'' +
+                ", type='" + type + '\'' +
+                '}';
+    }
 }

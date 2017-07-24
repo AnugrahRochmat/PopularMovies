@@ -63,4 +63,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         this.reviews = reviews;
         notifyDataSetChanged();
     }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
 }

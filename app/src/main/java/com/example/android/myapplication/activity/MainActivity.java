@@ -51,9 +51,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private PosterAdapter adapter;
 
     private String mSortBy;
-    private String defaultSort;
+    private String defaultSort = "popular";
 
     private static final int FAVOURITES_LOADER_ID = 3;
+    private static final String SAVED_MOVIES_KEY = "SAVED_MOVIES_KEY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +85,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         recyclerView.setAdapter(adapter);
 
         //getSupportLoaderManager().initLoader(FAVOURITES_LOADER_ID,null,this);
-        defaultSort = "popular";
-        loadMovies(defaultSort);
+        //defaultSort = "popular";
+        //loadMovies(defaultSort);
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SAVED_MOVIES_KEY)){
+                List<Movie> movies = savedInstanceState.getParcelableArrayList(SAVED_MOVIES_KEY);
+                adapter.setMoviesData(movies);
+            }
+        } else {
+            loadMovies(defaultSort);
+        }
+
+
+        Log.d(TAG, "Lifecycle Event: onCreate");
 
     }
 
@@ -213,6 +226,52 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
 
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        Log.d(TAG, "Lifecycle Event: onStart");
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        Log.d(TAG, "Lifecycle Event: onResume";
+//    }
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        Log.d(TAG, "Lifecycle Event: onPause");
+//    }
+//
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        Log.d(TAG, "Lifecycle Event: onStop");
+//    }
+//
+//    @Override
+//    protected void onRestart() {
+//        super.onRestart();
+//        Log.d(TAG, "Lifecycle Event: onRestart");
+//    }
+//
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        Log.d(TAG, "Lifecycle Event: onDestroy");
+//    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //Log.d(TAG, "Lifecycle Event: onSaveInstanceState");
+
+        ArrayList<Movie> mov = new ArrayList<>(adapter.getMovies());
+        if (mov != null && !mov.isEmpty()) {
+            outState.putParcelableArrayList(SAVED_MOVIES_KEY, mov);
+        }
+    }
 }
 
 

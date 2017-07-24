@@ -1,12 +1,26 @@
 package com.example.android.myapplication.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Anugrah on 7/8/17.
  */
 
-public class Review {
+public class Review implements Parcelable{
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
+
     /**
      * Variable Declaration
      */
@@ -60,4 +74,36 @@ public class Review {
         this.url = url;
     }
 
+    /**
+     * Parcelling
+     */
+    public Review(Parcel in){
+        this.id = in.readString();
+        this.author = in.readString();
+        this.content = in.readString();
+        this.url = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.author);
+        dest.writeString(this.content);
+        dest.writeString(this.url);
+    }
+
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "id='" + id + '\'' +
+                ", author='" + author + '\'' +
+                ", content='" + content + '\'' +
+                ", url='" + url + '\'' +
+                '}';
+    }
 }
